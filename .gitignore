@@ -1,15 +1,3 @@
-# Mac OS X
-## System files
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-## Thumbnails
-._*
-## Files that might appear on external disks
-.Spotlight-V100
-.Trashes
-
 # Temporary files
 /tmp/*
 *~
@@ -33,3 +21,14 @@ test-*.pdf
 ## CTAN upload archive
 graphicxmagic.tds.zip
 graphicxmagic.zip
+
+# Mac OS X files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+## Thumbnails
+._*
+## Files that might appear on external disks
+.Spotlight-V100
+.Trashes
