@@ -1,31 +1,31 @@
-% #!rm -f tigerpsdfmt4* && ptex2pdf -l -u -ot '-shell-escape' -od '-v' test-gin-rule-psd
-% #!rm -f tigerpsdfmt4* && xelatex -shell-escape test-gin-rule-psd
-% #!rm -f tigerpsdfmt4* && pdflatex -shell-escape test-gin-rule-psd
-%#!rm -f tigerpsdfmt4* && lualatex -shell-escape test-gin-rule-psd
+% #!rm -f testfiles/tigerpsdfmt4* && ptex2pdf -l -u -ot '-shell-escape' -od '-v' test-gin-rule-psd
+% #!rm -f testfiles/tigerpsdfmt4* && xelatex -shell-escape test-gin-rule-psd
+% #!rm -f testfiles/tigerpsdfmt4* && pdflatex -shell-escape test-gin-rule-psd
+%#!rm -f testfiles/tigerpsdfmt4* && lualatex -shell-escape test-gin-rule-psd
 \documentclass[luatex]{article}%%set driver as global option
 \usepackage{graphicx}
 \usepackage[%
-  magick,%imagemagick,graphicsmagick,%%same as the one; %%default: sips
+  magick,%imagemagick,graphicsmagick,%%same as the one;
   % convert,%% old ImageMagick
   cache=true,%%default: false
-]{graphicxpsd}
+]{graphicxmagic}
 \listfiles
 \begin{document}
 \begin{itemize}
 \makeatletter
-\item PSD-to-PDF: \@gfxpsd@psdtopdf
+\item Image-to-PDF: \@gfxmagic@imagetopdf
 
-\item image cache: \if@gfxpsd@imagecache true\else false\fi
+\item image cache: \if@gfxmagic@imagecache true\else false\fi
 \makeatother
 \end{itemize}
 
-%% $ file tigerpsdfmt.psd
-%% tigerpsdfmt.psd: Adobe Photoshop Image, 550 x 568, RGBA, 4x 8-bit channels
-\includegraphics{tigerpsdfmt.psd}
+%% $ file testfiles/tigerpsdfmt.psd
+%% testfiles/tigerpsdfmt.psd: Adobe Photoshop Image, 550 x 568, RGBA, 4x 8-bit channels
+\includegraphics{testfiles/tigerpsdfmt.psd}
 \end{document}
 
-$ pdfinfo tigerpsdfmt4gfxpsd.pdf
-Title:          tigerpsdfmt4gfxpsd
+$ pdfinfo testfiles/tigerpsdfmt4gfxmagic.pdf
+Title:          tigerpsdfmt4gfxmagic
 Producer:       /opt/homebrew/Cellar/imagemagick/7.0.7-15/share/doc/ImageMagick-7//index.html
 CreationDate:   Sat Jan 27 00:10:51 2018 JST
 ModDate:        Sat Jan 27 00:10:51 2018 JST
@@ -42,7 +42,7 @@ File size:      1052740 bytes
 Optimized:      no
 PDF version:    1.4
 
-$ pdfinfo tigerpsdfmt4gfxpsd.pdf
+$ pdfinfo testfiles/tigerpsdfmt4gfxmagic.pdf
 Producer:       Mac OS X 10.13.4 Quartz PDFContext
 CreationDate:   Fri Jan 26 15:12:13 2018 JST
 ModDate:        Fri Jan 26 15:12:13 2018 JST

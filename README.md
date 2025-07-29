@@ -1,9 +1,6 @@
-# graphicxpsd Package
+# graphicxmagic Package
 
-LaTeX: Adobe Photoshop Data format (PSD) support for graphicx package via PSD-to-PDF conversion
-
-This package provides Adobe Photoshop Data format (PSD) support for graphicx package
-with `sips` (Darwin/macOS)/`magick` (ImageMagick) command.
+LaTeX: support for (almost) any image format for the `graphicx` package via various converters (`img2pdf`, `convert`, `magick`, `gm`, `sips`)
 
  * Major drivers support: `dvipdfmx`, `xetex`, `pdftex`, `luatex`
 
@@ -12,20 +9,15 @@ with `sips` (Darwin/macOS)/`magick` (ImageMagick) command.
 
  * recent [TeX Live](https://www.tug.org/texlive/) environment
    (TeX Live 2012 or higher release version)
- * Mac OS X or [ImageMagick](https://www.imagemagick.org/)
+ * img2pdf, [ImageMagick](https://www.imagemagick.org/), GraphicsMagick or Mac OS X
 
 
 ## Installation
 
-Copy: `graphicxpsd.sty` -> `$TEXMF/tex/latex/graphicxpsd/`
+Copy: `graphicxmagic.sty` -> `$TEXMF/tex/latex/graphicxmagic/`
 
 
 ## License
 
 This package is licensed under the terms of the MIT License.
 
-
---------------------
-
-Munehiro Yamamoto
-https://github.com/munepi

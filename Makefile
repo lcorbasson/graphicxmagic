@@ -1,21 +1,21 @@
-graphicxpsd.pdf: graphicxpsd.tex
-	lualatex -shell-escape graphicxpsd
+graphicxmagic.pdf: graphicxmagic.tex
+	lualatex -shell-escape graphicxmagic
 
-graphicxpsd.zip: clean
-	git archive --format=tar --prefix=graphicxpsd/ HEAD | gtar -x
+graphicxmagic.zip: clean
+	git archive --format=tar --prefix=graphicxmagic/ HEAD | gtar -x
 
 	## remove unpacked files
-	rm -f graphicxpsd/.gitignore graphicxpsd/Makefile
+	rm -f graphicxmagic/.gitignore graphicxmagic/Makefile
 
 	## then, now just make archive
-	zip -9 -r graphicxpsd.zip graphicxpsd/*
+	zip -9 -r graphicxmagic.zip graphicxmagic/*
 
-	rm -rf graphicxpsd
+	rm -rf graphicxmagic
 	@echo finished
 
 clean:
-	rm -rf graphicxpsd.zip graphicxpsd
-	rm -f *.aux *.log *4gfxpsd.*
+	rm -rf graphicxmagic.zip graphicxmagic
+	rm -f *.aux *.log *4gfxmagic.*
 	find . -type f -name "*~" -delete
 
-.PHONY: graphicxpsd.zip
+.PHONY: graphicxmagic.zip
