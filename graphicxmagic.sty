@@ -6,18 +6,22 @@
 %%
 %% This is file 'graphicxmagic.sty'.
 %%
-%% Copyright (c) 2017-2023 Munehiro Yamamoto
+%% Based on 'graphicxpsd.sty' v1.2:
+%%     https://github.com/munepi/graphicxpsd
+%%     Copyright (c) 2017-2023 Munehiro Yamamoto
+%%         * e-mail:   munepixyz@gmail.com, munepi@greencherry.jp
+%%         * GitHub:   https://github.com/munepi
+%%         * Twitter:  @munepixyz
 %%
-%%   * e-mail:   munepixyz@gmail.com, munepi@greencherry.jp
-%%   * GitHub:   https://github.com/munepi
-%%   * Twitter:  @munepixyz
+%% Copyright (c) 2025 Loïc CORBASSON <loic.devel@corbasson.fr>
 %%
 %% This package is licensed under the terms of the MIT License.
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{graphicxmagic}
-  [2021/01/07 v1.2  Adobe Photoshop Data format (PSD) support for graphicx package
-                    with sips (Darwin/macOS)/magick (ImageMagick) command]
+  [2025/07/29 v1.3  Support for (almost) any image format for the graphicx
+                    package via various converters
+                    (img2pdf, convert, magick, gm, sips)]
 
 %% declare package errors
 \def\gfxmagic@error{\PackageError{graphicxmagic}}
@@ -37,19 +41,21 @@
 %% sips (Darwin/macOS), magick/convert (ImageMagick),
 %% graphicsmagick (GraphicsMagick)
 %% TODO:
-%% - add img2pdf as the default
+%% - add img2pdf as the default with --nodate to make it deterministic
 \newif\if@gfxmagic@imagemagick \@gfxmagic@imagemagickfalse
-\def\@gfxmagic@imagetopdf{sips}%% as default
-\DeclareOption{sips}{%
-  \@gfxmagic@imagemagickfalse\gdef\@gfxmagic@imagetopdf{sips}}
+\def\@gfxmagic@imagetopdf{img2pdf}%% as default
+\DeclareOption{img2pdf}{%
+  \@gfxmagic@imagemagickfalse\gdef\@gfxmagic@imagetopdf{img2pdf}}
 \DeclareOption{imagemagick}{%
   \@gfxmagic@imagemagicktrue\gdef\@gfxmagic@imagetopdf{magick}}
 \DeclareOption{magick}{%
   \@gfxmagic@imagemagicktrue\gdef\@gfxmagic@imagetopdf{magick}}
-\DeclareOption{convert}{%
-  \@gfxmagic@imagemagicktrue\gdef\@gfxmagic@imagetopdf{convert}}
 \DeclareOption{graphicsmagick}{%
   \@gfxmagic@imagemagicktrue\gdef\@gfxmagic@imagetopdf{gm\GPT@space convert}}
+\DeclareOption{convert}{%
+  \@gfxmagic@imagemagicktrue\gdef\@gfxmagic@imagetopdf{convert}}
+\DeclareOption{sips}{%
+  \@gfxmagic@imagemagickfalse\gdef\@gfxmagic@imagetopdf{sips}}
 
 %% image cache flag
 \newif\if@gfxmagic@imagecache \@gfxmagic@imagecachefalse
@@ -119,5 +125,6 @@
 }
 
 \endinput
+% vim: filetype=tex tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 %%
 %% End of file `graphicxmagic.sty'.
