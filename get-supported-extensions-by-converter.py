@@ -2,9 +2,16 @@
 
 import csv
 from io import StringIO
+import os
 from PIL import Image
-import pyvips
+try:
+	import pyvips
+except ModuleNotFoundError as e:
+	pyvips = None
+	print(e)
 import subprocess
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 supported_extensions = dict()
@@ -12,7 +19,24 @@ supported_extensions = dict()
 supported_extensions['PIL'] = {file_ext.lstrip('.') for file_ext, file_format in Image.registered_extensions().items() if file_format in Image.OPEN}
 supported_extensions['img2pdf'] = supported_extensions['PIL']
 
-supported_extensions['vips'] = set(pyvips.base.get_suffixes())
+if pyvips is not None:
+	supported_extensions['vips'] = {ext.lstrip('.') for ext in pyvips.base.get_suffixes()}
+
+def get_inkscape_supported_extensions():
+# inkscape --export-type=unknown --export-filename=tiger.unknown tiger.svg 2>&1 > /dev/null | sed -n -e 's|.*Allowed values: \[\([^]]*\),*\].*|\1|p' | tr -d ' .' | tr ',' '\n'
+	inkscape_formats_list_command = ['inkscape', '--export-type=unknown', '--export-filename=tiger.unknown', 'tests/inputs/tiger.svg'] # Generated an error message, listing available formats
+	inkscape_formats_list_to_str_command = [
+		'sed', '-n', # Don't print non-matching lines
+		'-e', r's|.*Allowed values: \[\([^]]*\),*\].*|\1|p', # Get the list of available formats
+	]
+	inkscape_formats_list_subprocess = subprocess.Popen(inkscape_formats_list_command, stderr=subprocess.PIPE)
+	inkscape_formats_list_str = subprocess.check_output(inkscape_formats_list_to_str_command, stdin=inkscape_formats_list_subprocess.stderr)
+	inkscape_formats_list_subprocess.wait()
+
+	inkscape_supported_extensions = {ext.lstrip('.') for ext in inkscape_formats_list_str.decode("utf-8").split(', ') if '\n' not in ext}
+	return inkscape_supported_extensions
+
+supported_extensions['inkscape'] = get_inkscape_supported_extensions()
 
 def get_magick_supported_extensions(variant=None):
 	magick_formats_list_command = ['convert', '-list', 'format']
@@ -84,6 +108,9 @@ print()
 print()
 print("{")
 for converter in sorted(supported_extensions.keys()):
+	with open(f'tests/inputs/formats-{converter}.csv', 'w', newline='') as csvfile:
+		csvwriter = csv.writer(csvfile, dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL)
+		csvwriter.writerows([[ext] for ext in sorted(supported_extensions[converter])])
 	print(f"\t'{converter}':")
 	print("\t\t{" + str(sorted(supported_extensions[converter])).strip('[]') + '},')
 print("}")
