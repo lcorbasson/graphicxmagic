@@ -72,6 +72,13 @@
 \DeclareOption{cache=false}{\@gfxwand@imagecachefalse}
 \DeclareOption{cache=False}{\@gfxwand@imagecachefalse}
 
+%% use only local files, in the document's directory
+\newif\if@gfxwand@localfiles \@gfxwand@localfilestrue
+\DeclareOption{localfiles=true}{\@gfxwand@localfilestrue}
+\DeclareOption{localfiles=True}{\@gfxwand@localfilestrue}
+\DeclareOption{localfiles=false}{\@gfxwand@localfilesfalse}
+\DeclareOption{localfiles=False}{\@gfxwand@localfilesfalse}
+
 \ProcessOptions\relax
 
 %% support for * (any) extension (imagetopdf)
@@ -103,13 +110,33 @@
   \protected\def\ShellEscape{\immediate\write18 }%%compatibility for TL14 or lower version
 }
 
+%% converted file's name
+\if@gfxwand@localfiles
+  \if@gfxwand@imagecache
+    % TODO if not pdfTex
+    \RequirePackage{pdftexcmds} % used for the hash of the image's path
+  \fi
+\fi
+% TODO ajouter un def pour \pdf@mdfivesum=\mdfivesum si pas défini
+\def\@gfxwand@targetfile#1{%
+  \if@gfxwand@localfiles
+    \if@gfxwand@imagecache
+      \jobname.\pdf@mdfivesum{#1}.4gfxwand.pdf%
+    \else
+      \jobname.4gfxwand.pdf%
+    \fi
+  \else
+    #1.4gfxwand.pdf%
+  \fi
+}
+
 %% read image file
 \let\clone@Gread@pdf\Gread@pdf
 \def\Gread@imagetopdf#1{%
   \if@gfxwand@imagecache
-    \IfFileExists{\Gin@base.4gfxwand.pdf}{%
-      \typeout{including cached image: \Gin@base.4gfxwand.pdf}%
-    }{\typeout{not found: \Gin@base.4gfxwand.pdf}%
+    \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
+      \typeout{including cached image: \@gfxwand@targetfile{\Gin@base}}%
+    }{\typeout{not found: \@gfxwand@targetfile{\Gin@base}}%
       \@gfxwand@convert@any@to@pdf}%
   \else
     \@gfxwand@convert@any@to@pdf
@@ -123,15 +150,15 @@
   \clone@Gread@pdf{#1}}
 
 \def\@gfxwand@convert@any@to@pdf{%
-  \typeout{converting: \Gin@base\Gin@ext\GPT@space -> \Gin@base.4gfxwand.pdf}%
+  \typeout{converting: \Gin@base\Gin@ext\GPT@space -> \@gfxwand@targetfile{\Gin@base}}%
   \if@gfxwand@imgtopdf
-    \ShellEscape{img2pdf --output \Gin@base.4gfxwand.pdf --nodate -- \Gin@base\Gin@ext\GPT@space}%
+    \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base} --nodate -- \Gin@base\Gin@ext\GPT@space}%
   \else
     \if@gfxwand@magick
-      \ShellEscape{\@gfxwand@converter\GPT@space -- \Gin@base\Gin@ext\GPT@space\Gin@base.4gfxwand.pdf}%
+      \ShellEscape{\@gfxwand@converter\GPT@space -- \Gin@base\Gin@ext\GPT@space\@gfxwand@targetfile{\Gin@base}}%
     \else
       \if@gfxwand@sips
-        \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \Gin@base.4gfxwand.pdf}%
+        \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}}%
       \else
         \gfxwand@error{Converter unspecified}%
       \fi
@@ -140,6 +167,16 @@
 }
 % TODO: see if we can use a single temp file without adding a .4gfxwand.pdf file to the source directories
 % TODO: see if we can use cache files in the document's directory with a (sha1, md5, ...) hash of the source files' paths?
+
+% remove the local temp file if present
+\AtEndDocument{
+  \if@gfxwand@localfiles
+    \if@gfxwand@imagecache
+    \else
+      \ShellEscape{rm -f -- \jobname.4gfxwand.pdf}%
+    \fi
+  \fi
+}
 
 \endinput
 % vim: filetype=tex tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
