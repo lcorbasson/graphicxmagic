@@ -1,21 +1,21 @@
-graphicxmagic.pdf: graphicxmagic.tex
-	lualatex -shell-escape graphicxmagic
+graphicxwand.pdf: graphicxwand.tex
+	lualatex -shell-escape graphicxwand
 
-graphicxmagic.zip: clean
-	git archive --format=tar --prefix=graphicxmagic/ HEAD | gtar -x
+graphicxwand.zip: clean
+	git archive --format=tar --prefix=graphicxwand/ HEAD | gtar -x
 
 	## remove unpacked files
-	rm -f graphicxmagic/.gitignore graphicxmagic/Makefile
+	rm -f graphicxwand/.gitignore graphicxwand/Makefile
 
 	## then, now just make archive
-	zip -9 -r graphicxmagic.zip graphicxmagic/*
+	zip -9 -r graphicxwand.zip graphicxwand/*
 
-	rm -rf graphicxmagic
+	rm -rf graphicxwand
 	@echo finished
 
 clean:
-	rm -rf graphicxmagic.zip graphicxmagic
-	rm -f *.aux *.log *4gfxmagic.*
+	rm -rf graphicxwand.zip graphicxwand
+	rm -f *.aux *.log *4gfxwand.*
 	find . -type f -name "*~" -delete
 
-.PHONY: graphicxmagic.zip
+.PHONY: graphicxwand.zip

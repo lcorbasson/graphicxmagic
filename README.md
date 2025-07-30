@@ -1,4 +1,4 @@
-# graphicxmagic Package
+# graphicxwand Package
 
 LaTeX: support for (almost) any image format for the `graphicx` package via various converters (`img2pdf`, `convert`, `magick`, `gm`, `sips`)
 
@@ -14,7 +14,7 @@ LaTeX: support for (almost) any image format for the `graphicx` package via vari
 
 ## Installation
 
-Copy: `graphicxmagic.sty` -> `$TEXMF/tex/latex/graphicxmagic/`
+Copy: `graphicxwand.sty` -> `$TEXMF/tex/latex/graphicxwand/`
 
 
 ## License
