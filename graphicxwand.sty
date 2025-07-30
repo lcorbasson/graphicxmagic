@@ -113,11 +113,10 @@
 %% converted file's name
 \if@gfxwand@localfiles
   \if@gfxwand@imagecache
-    % TODO if not pdfTex
-    \RequirePackage{pdftexcmds} % used for the hash of the image's path
+    % make sure that we have \pdf@mdfivesum, used for the hash of the image's path
+    \RequirePackage{pdftexcmds}
   \fi
 \fi
-% TODO ajouter un def pour \pdf@mdfivesum=\mdfivesum si pas défini
 \def\@gfxwand@targetfile#1{%
   \if@gfxwand@localfiles
     \if@gfxwand@imagecache
