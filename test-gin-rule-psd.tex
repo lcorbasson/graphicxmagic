@@ -2,13 +2,21 @@
 % #!rm -f testfiles/tigerpsdfmt4* && xelatex -shell-escape test-gin-rule-psd
 % #!rm -f testfiles/tigerpsdfmt4* && pdflatex -shell-escape test-gin-rule-psd
 %#!rm -f testfiles/tigerpsdfmt4* && lualatex -shell-escape test-gin-rule-psd
-\documentclass[luatex]{article}%%set driver as global option
+
+% TODO: make this test file generic, getting parameters from \jobname:
+% - converter to use
+% - image format (for bitmaps, create test images based on the ImageMagick rose)
+% - use of the image cache or not
+% then create dedicated symlinks in directories by TeX driver (pdflatex, lualatex, etc.)
+% and a global bash file to run all tests
+
+\documentclass{article}
 \usepackage{graphicx}
 \usepackage[%
   %img2pdf,
   magick,%imagemagick,graphicsmagick,%%same as the one;
   % convert,%% old ImageMagick
-%  cache=true,%%default: false
+  cache=true,%%default: false
 ]{graphicxwand}
 \listfiles
 \begin{document}

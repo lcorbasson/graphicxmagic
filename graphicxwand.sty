@@ -138,6 +138,7 @@
 \def\Gread@imagetopdf#1{%
   \if@gfxwand@imagecache
     \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
+      % TODO: invalidate the cached file depending on mtime
       \typeout{including cached image: \@gfxwand@targetfile{\Gin@base}}%
     }{\typeout{not found: \@gfxwand@targetfile{\Gin@base}}%
       \@gfxwand@convert@any@to@pdf}%

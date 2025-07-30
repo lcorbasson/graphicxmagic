@@ -2,8 +2,9 @@
 \documentclass[luatex]{article}
 \usepackage{shortvrb}\MakeShortVerb{\|}
 \usepackage{hyperref}
+\usepackage{bookmark}
 \usepackage{graphicx}
-\usepackage{graphicxwand}
+\usepackage[magick]{graphicxwand}
 \title{\textsf{graphicxwand} Package}
 \author{Munehiro Yamamoto} %FIXME
 \date{2021/01/07 v1.2} %FIXME
@@ -14,6 +15,9 @@ This package provides Adobe Photoshop Data format (PSD) support
 for \textsf{graphicx} package
 with \texttt{sips} (Darwin/macOS)/\texttt{magick} (ImageMagick) command.
 \end{abstract}
+
+% TODO add a section with examples/support for each file format, converter and TeX driver, based on test files
+% (detect which test files exist in PDF to check boxes in a table)
 
 \section{Motivation} %FIXME
 \textsf{graphicx} package supports already many graphics image formats as bellow.
