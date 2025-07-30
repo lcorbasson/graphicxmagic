@@ -58,6 +58,29 @@ magick_variants = [
 for magick_variant in magick_variants:
 	supported_extensions[magick_variant] = get_magick_supported_extensions(variant=magick_variant)
 
+for converter in sorted(supported_extensions.keys()):
+	print(converter)
+	sorted_exts = sorted(set(
+		[ext for ext in sorted(supported_extensions[converter])]
+		+ [ext.upper() for ext in sorted(supported_extensions[converter])]
+		+ [ext.lower() for ext in sorted(supported_extensions[converter])]
+		+ ['*']
+	), key=str.casefold)
+	namedefs = {
+		output_format: [
+			r'  \@namedef{Gin@rule@.' + ext + '}#1{{imagetopdf}{.' + output_format + '}{#1}}'
+			for ext in sorted_exts
+		]
+		for output_format in ('xbb', 'pdf')
+	}
+	print(r'\if@gfxmagic@dvipdfmx')
+	print('\n'.join(namedefs['xbb']))
+	print(r'\else\if@gfxmagic@pdftex')
+	print('\n'.join(namedefs['pdf']))
+	print()
+
+print()
+print()
 print("{")
 for converter in sorted(supported_extensions.keys()):
 	print(f"\t'{converter}':")

@@ -5,6 +5,7 @@
 \documentclass[luatex]{article}%%set driver as global option
 \usepackage{graphicx}
 \usepackage[%
+  %img2pdf,
   magick,%imagemagick,graphicsmagick,%%same as the one;
   % convert,%% old ImageMagick
   cache=true,%%default: false
@@ -22,6 +23,7 @@
 %% $ file testfiles/tigerpsdfmt.psd
 %% testfiles/tigerpsdfmt.psd: Adobe Photoshop Image, 550 x 568, RGBA, 4x 8-bit channels
 \includegraphics{testfiles/tigerpsdfmt.psd}
+\includegraphics[keepaspectratio, height=\linewidth, width=\linewidth]{IMG_8420.HEIC}
 \end{document}
 
 $ pdfinfo testfiles/tigerpsdfmt4gfxmagic.pdf
