@@ -74,9 +74,9 @@ for converter in sorted(supported_extensions.keys()):
 		]
 		for output_format in ('xbb', 'pdf')
 	}
-	print(r'\if@gfxmagic@dvipdfmx')
+	print(r'\if@gfxwand@dvipdfmx')
 	print('\n'.join(namedefs['xbb']))
-	print(r'\else\if@gfxmagic@pdftex')
+	print(r'\else\if@gfxwand@pdftex')
 	print('\n'.join(namedefs['pdf']))
 	print()
 

@@ -1,10 +1,10 @@
-%#!rm -f tigerpsdfmt4* && lualatex -shell-escape graphicxmagic
+%#!rm -f tigerpsdfmt4* && lualatex -shell-escape graphicxwand
 \documentclass[luatex]{article}
 \usepackage{shortvrb}\MakeShortVerb{\|}
 \usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{graphicxmagic}
-\title{\textsf{graphicxmagic} Package}
+\usepackage{graphicxwand}
+\title{\textsf{graphicxwand} Package}
 \author{Munehiro Yamamoto} %FIXME
 \date{2021/01/07 v1.2} %FIXME
 \begin{document}
@@ -24,7 +24,7 @@ with \texttt{sips} (Darwin/macOS)/\texttt{magick} (ImageMagick) command.
 \end{itemize}
 However, it currently does not support Adobe Photoshop Data format (PSD).
 
-Against that, we developed the \textsf{graphicxmagic} package
+Against that, we developed the \textsf{graphicxwand} package
 to support PSD format via PSD-to-PDF conversion
 with two image converters.
 \begin{itemize}
@@ -35,14 +35,14 @@ pre-installed command in Darwin/macOS
 bundled command in \href{https://www.imagemagick.org/}{ImageMagick}
 \end{itemize}
 
-\section{Loading \textsf{graphicxmagic} Package}
+\section{Loading \textsf{graphicxwand} Package}
 
-Load \textsf{graphicxmagic} package after loading \textsf{graphicx} package.
+Load \textsf{graphicxwand} package after loading \textsf{graphicx} package.
 
 \begin{quote}
 \begin{verbatim}
 \usepackage{graphicx}
-\usepackage[<options>]{graphicxmagic}
+\usepackage[<options>]{graphicxwand}
 \end{verbatim}
 \end{quote}
 
@@ -70,7 +70,7 @@ If you should use ImageMagick~6 or lower version, you just choose |convert|.
 
 \item |cache=true|: supports to include cached images for all PSD files.
 If there does not exist the cached image for a PSD file,
-\textsf{graphicxmagic} attempts PSD-to-PDF conversion of the PSD file.
+\textsf{graphicxwand} attempts PSD-to-PDF conversion of the PSD file.
 \end{itemize}
 \footnotetext{When ImageMagick project had released ImageMagick~7,
 they changed \texttt{convert} to \texttt{magick}
@@ -91,7 +91,7 @@ that is, run |lualatex -shell-escape|.
 %#!lualatex -shell-escape
 \documentclass[luatex]{article}%%set luatex driver as global option
 \usepackage{graphicx}
-\usepackage{graphicxmagic}
+\usepackage{graphicxwand}
 \begin{document}
 \includegraphics{testfiles/tigerpsdfmt.psd}
 \end{document}

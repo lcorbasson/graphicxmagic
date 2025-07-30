@@ -9,14 +9,14 @@
   magick,%imagemagick,graphicsmagick,%%same as the one;
   % convert,%% old ImageMagick
   cache=true,%%default: false
-]{graphicxmagic}
+]{graphicxwand}
 \listfiles
 \begin{document}
 \begin{itemize}
 \makeatletter
-\item Image-to-PDF: \@gfxmagic@imagetopdf
+\item Image-to-PDF: \@gfxwand@imagetopdf
 
-\item image cache: \if@gfxmagic@imagecache true\else false\fi
+\item image cache: \if@gfxwand@imagecache true\else false\fi
 \makeatother
 \end{itemize}
 
@@ -26,8 +26,8 @@
 \includegraphics[keepaspectratio, height=\linewidth, width=\linewidth]{IMG_8420.HEIC}
 \end{document}
 
-$ pdfinfo testfiles/tigerpsdfmt4gfxmagic.pdf
-Title:          tigerpsdfmt4gfxmagic
+$ pdfinfo testfiles/tigerpsdfmt.4gfxwand.pdf
+Title:          tigerpsdfmt.4gfxwand
 Producer:       /opt/homebrew/Cellar/imagemagick/7.0.7-15/share/doc/ImageMagick-7//index.html
 CreationDate:   Sat Jan 27 00:10:51 2018 JST
 ModDate:        Sat Jan 27 00:10:51 2018 JST
@@ -44,7 +44,7 @@ File size:      1052740 bytes
 Optimized:      no
 PDF version:    1.4
 
-$ pdfinfo testfiles/tigerpsdfmt4gfxmagic.pdf
+$ pdfinfo testfiles/tigerpsdfmt.4gfxwand.pdf
 Producer:       Mac OS X 10.13.4 Quartz PDFContext
 CreationDate:   Fri Jan 26 15:12:13 2018 JST
 ModDate:        Fri Jan 26 15:12:13 2018 JST
