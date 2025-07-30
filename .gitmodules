@@ -1,0 +1,6 @@
+[submodule "tests/inputs/ghostpdl"]
+	path = tests/inputs/references/ghostpdl
+	url = https://cgit.ghostscript.com/ghostpdl.git
+[submodule "tests/inputs/ImageMagick"]
+	path = tests/inputs/references/ImageMagick
+	url = https://github.com/ImageMagick/ImageMagick.git
