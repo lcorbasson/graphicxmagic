@@ -1,0 +1,141 @@
+---
+  version: 1.0
+  image: 
+    name: ./rose.png
+    baseName: rose.png
+    permissions: 664
+    format: PNG
+    formatDescription: Portable Network Graphics
+    mimeType: image/png
+    class: DirectClass
+    geometry: 
+      width: 70
+      height: 46
+      x: 0
+      y: 0
+    
+    resolution: 
+      x: 72
+      y: 72
+    
+    printSize: 
+      x: 0.972222
+      y: 0.638889
+    
+    units: Undefined
+    type: TrueColor
+    endianness: Undefined
+    colorspace: sRGB
+    depth: 8
+    baseDepth: 8
+    channelDepth: 
+      red: 8
+      green: 8
+      blue: 1
+    
+    pixels: 3220
+    imageStatistics: 
+      overall: 
+        min: 22
+        max: 255
+        mean: 105.147
+        median: 85.3333
+        standardDeviation: 58.968
+        kurtosis: 1.42131
+        skewness: 1.31432
+        entropy: 0.89247
+      
+    
+    channelStatistics: 
+      red: 
+        min: 35
+        max: 255
+        mean: 145.712
+        median: 132
+        standardDeviation: 69.306
+        kurtosis: -1.386
+        skewness: 0.146302
+        entropy: 0.966517
+       
+      green: 
+        min: 22
+        max: 255
+        mean: 89.2602
+        median: 66
+        standardDeviation: 52.4779
+        kurtosis: 2.63548
+        skewness: 1.81809
+        entropy: 0.863321
+       
+      blue: 
+        min: 24
+        max: 255
+        mean: 80.4683
+        median: 58
+        standardDeviation: 55.12
+        kurtosis: 3.01445
+        skewness: 1.97858
+        entropy: 0.847573
+      
+    
+    renderingIntent: Perceptual
+    gamma: 0.454545
+    chromaticity: 
+      redPrimary: 
+        x: 0.64
+        y: 0.33
+      
+      greenPrimary: 
+        x: 0.3
+        y: 0.6
+      
+      bluePrimary: 
+        x: 0.15
+        y: 0.06
+      
+      whitePrimary: 
+        x: 0.3127
+        y: 0.329
+      
+    
+    matteColor: '#BDBDBDBDBDBD'
+    backgroundColor: '#FFFFFFFFFFFF'
+    borderColor: '#DFDFDFDFDFDF'
+    transparentColor: '#000000000000'
+    interlace: None
+    intensity: Undefined
+    compose: Over
+    pageGeometry: 
+      width: 70
+      height: 46
+      x: 0
+      y: 0
+    
+    dispose: Undefined
+    iterations: 0
+    compression: Zip
+    orientation: Undefined
+    properties: 
+      "date:create": "2025-07-30T17:48:31+00:00"
+      "date:modify": "2025-07-30T17:48:31+00:00"
+      "date:timestamp": "2025-07-30T17:48:42+00:00"
+      "png:bKGD": chunk was found (see Background color, above)
+      "png:cHRM": chunk was found (see Chromaticity, above)
+      "png:IHDR.bit-depth-orig": 8
+      "png:IHDR.bit_depth": 8
+      "png:IHDR.color-type-orig": 2
+      "png:IHDR.color_type": 2 (Truecolor)
+      "png:IHDR.interlace_method": 0 (Not interlaced)
+      "png:IHDR.width,height": 70, 46
+      "png:pHYs": x_res=72, y_res=72, units=0
+      "png:text": 3 tEXt/zTXt/iTXt chunks were found
+      signature: fb6fc68beb3b1001c5ebaa671c8ac8fddea06995027127765ff508f77723cc52
+    
+    tainted: false
+    filesize: 7032B
+    numberPixels: 3220
+    pixelsPerSecond: 2.97806MB
+    userTime: 0.000u
+    elapsedTime: 0:01.001
+    version: "ImageMagick 7.1.2-0 Q16 x86_64 20250713 https://imagemagick.org"
+...
