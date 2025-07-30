@@ -31,11 +31,15 @@
 
 %% support major graphicx drivers
 \newif\if@gfxwand@dvipdfmx \@gfxwand@dvipdfmxfalse
-\newif\if@gfxwand@pdftex \@gfxwand@pdftexfalse
-\DeclareOption{dvipdfmx}{\@gfxwand@dvipdfmxtrue\@gfxwand@pdftexfalse}
-\DeclareOption{xetex}{\@gfxwand@dvipdfmxtrue\@gfxwand@pdftexfalse}
-\DeclareOption{luatex}{\@gfxwand@dvipdfmxfalse\@gfxwand@pdftextrue}
-\DeclareOption{pdftex}{\@gfxwand@dvipdfmxfalse\@gfxwand@pdftextrue}
+\newif\if@gfxwand@likepdftex \@gfxwand@likepdftexfalse
+\RequirePackage{iftex}
+\ifpdf
+  \@gfxwand@dvipdfmxfalse\@gfxwand@likepdftextrue%
+\fi
+\DeclareOption{dvipdfmx}{\@gfxwand@dvipdfmxtrue\@gfxwand@likepdftexfalse}
+\DeclareOption{xetex}{\@gfxwand@dvipdfmxtrue\@gfxwand@likepdftexfalse}
+\DeclareOption{luatex}{\@gfxwand@dvipdfmxfalse\@gfxwand@likepdftextrue}
+\DeclareOption{pdftex}{\@gfxwand@dvipdfmxfalse\@gfxwand@likepdftextrue}
 
 %% support for image-to-pdf commands:
 %% TODO move back to Magick as default
@@ -86,12 +90,12 @@
 %% TODO: add an option to use JP2/JPG (lossy) conversion instead of PDF/PNG
 \if@gfxwand@dvipdfmx
   \@namedef{Gin@rule@*}#1{{imagetopdf}{.xbb}{#1}}
-\else\if@gfxwand@pdftex
+\else\if@gfxwand@likepdftex
   \@namedef{Gin@rule@*}#1{{imagetopdf}{.pdf}{#1}}
 \else
-  \gfxwand@error{Please choice specific dviware driver from the following list
-    and set the one as a documentclass option.^^J
-    available dviware drivers: dvipdfmx, xetex, luatex, pdftex}%
+  \gfxwand@error{Please choose a specific dviware driver from the following list
+    and set it as a documentclass option.^^J
+    Available dviware drivers: dvipdfmx, xetex, luatex, pdftex}%
 \fi\fi
 
 %% then, include the file as converted PDF
