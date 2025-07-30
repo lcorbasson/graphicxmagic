@@ -49,21 +49,21 @@
 \newif\if@gfxwand@magick \@gfxwand@magickfalse
 %\newif\if@gfxwand@vips \@gfxwand@vipsfalse
 \newif\if@gfxwand@sips \@gfxwand@sipsfalse
-\def\@gfxwand@imagetopdf{img2pdf}%% as default
+\def\@gfxwand@converter{convert}%% as default
 \DeclareOption{img2pdf}{%
-  \@gfxwand@imgtopdftrue\gdef\@gfxwand@imagetopdf{img2pdf}}
+  \@gfxwand@imgtopdftrue\gdef\@gfxwand@converter{img2pdf}}
 \DeclareOption{imagemagick}{%
-  \@gfxwand@magicktrue\gdef\@gfxwand@imagetopdf{magick}}
+  \@gfxwand@magicktrue\gdef\@gfxwand@converter{magick}}
 \DeclareOption{magick}{%
-  \@gfxwand@magicktrue\gdef\@gfxwand@imagetopdf{magick}}
+  \@gfxwand@magicktrue\gdef\@gfxwand@converter{magick}}
 \DeclareOption{graphicsmagick}{%
-  \@gfxwand@magicktrue\gdef\@gfxwand@imagetopdf{gm\GPT@space convert}}
+  \@gfxwand@magicktrue\gdef\@gfxwand@converter{gm\GPT@space convert}}
 \DeclareOption{convert}{%
-  \@gfxwand@magicktrue\gdef\@gfxwand@imagetopdf{convert}}
+  \@gfxwand@magicktrue\gdef\@gfxwand@converter{convert}}
 %\DeclareOption{vips}{%  %% TODO see if a vips+pdf or vips option is quicker than img2pdf
-%  \@gfxwand@vipstrue\gdef\@gfxwand@imagetopdf{vips}}
+%  \@gfxwand@vipstrue\gdef\@gfxwand@converter{vips}}
 \DeclareOption{sips}{%
-  \@gfxwand@sipstrue\gdef\@gfxwand@imagetopdf{sips}}
+  \@gfxwand@sipstrue\gdef\@gfxwand@converter{sips}}
 
 %% image cache flag
 \newif\if@gfxwand@imagecache \@gfxwand@imagecachefalse
@@ -1315,7 +1315,7 @@
     \ShellEscape{img2pdf --output \Gin@base.4gfxwand.pdf --nodate -- \Gin@base\Gin@ext\GPT@space}%
   \else
     \if@gfxwand@magick
-      \ShellEscape{\@gfxwand@imagetopdf\GPT@space -- \Gin@base\Gin@ext\GPT@space\Gin@base.4gfxwand.pdf}%
+      \ShellEscape{\@gfxwand@converter\GPT@space -- \Gin@base\Gin@ext\GPT@space\Gin@base.4gfxwand.pdf}%
     \else
       \if@gfxwand@sips
         \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \Gin@base.4gfxwand.pdf}%
