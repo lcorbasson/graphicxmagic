@@ -72,6 +72,7 @@
 \ProcessOptions\relax
 
 %% support for * (any) extension (imagetopdf)
+%% FIXME: remove extensions natively supported by graphicx
 \if@gfxmagic@dvipdfmx
   \@namedef{Gin@rule@.*}#1{{imagetopdf}{.xbb}{#1}}
   \@namedef{Gin@rule@.3fr}#1{{imagetopdf}{.xbb}{#1}}

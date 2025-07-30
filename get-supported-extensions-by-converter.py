@@ -60,6 +60,7 @@ for magick_variant in magick_variants:
 
 for converter in sorted(supported_extensions.keys()):
 	print(converter)
+#%% FIXME: remove extensions natively supported by graphicx
 	sorted_exts = sorted(set(
 		[ext for ext in sorted(supported_extensions[converter])]
 		+ [ext.upper() for ext in sorted(supported_extensions[converter])]
