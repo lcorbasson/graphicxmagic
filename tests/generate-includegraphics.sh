@@ -52,9 +52,6 @@ for test_name in "${tests[@]}"; do
 	echo -n ' & '
 	for converter_idx in "${!converters[@]}"; do
 		echo -n '\multicolumn{'"${#reference_images[@]}"'}{'
-		if [ "$converter_idx" -eq 0 ]; then
-			echo -n '|'
-		fi
 		echo -n '|c||}{'"${converters[$converter_idx]}"'}'
 		if [ "$converter_idx" -lt "$((${#converters[@]} - 1))" ]; then
 			echo -n ' & '
@@ -104,7 +101,6 @@ done | tee -a "$globaltexfile"
 	echo '\end{document}'
 ) | tee -a "$globaltexfile"
 
-exit
 
 for test_name in "${tests[@]}"; do
 	for texfile in "test_$test_name-"*".tex"; do
