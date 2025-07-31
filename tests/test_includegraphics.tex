@@ -1,0 +1,52 @@
+% #!rm -f testfiles/tigerpsdfmt4* && ptex2pdf -l -u -ot '-shell-escape' -od '-v' test-gin-rule-psd
+% #!rm -f testfiles/tigerpsdfmt4* && xelatex -shell-escape test-gin-rule-psd
+% #!rm -f testfiles/tigerpsdfmt4* && pdflatex -shell-escape test-gin-rule-psd
+%#!rm -f testfiles/tigerpsdfmt4* && lualatex -shell-escape test-gin-rule-psd
+
+% TODO: make this test file generic, getting parameters from \jobname:
+% - converter to use
+% - image format (for bitmaps, create test images based on the ImageMagick rose)
+% - use of the image cache or not
+% then create dedicated symlinks in directories by TeX driver (pdflatex, lualatex, etc.)
+% and a global bash file to run all tests
+
+\documentclass[landscape]{article}
+
+\usepackage{jobname-suffix}
+\usepackage{xstring}
+\StrBetween[1,2]{-\JobnameSuffix-}{-}{-}[\image]
+\StrBetween[2,3]{-\JobnameSuffix-}{-}{-}[\ext]
+\StrBetween[3,4]{-\JobnameSuffix-}{-}{-}[\converter]
+\StrBetween[4,5]{-\JobnameSuffix-}{-}{-}[\opt]
+
+\usepackage[margin=0cm]{geometry}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{graphicx}
+\usepackage[%
+  converter=\converter,
+  %img2pdf,
+%  magick,%imagemagick,graphicsmagick,%%same as the one;
+  % convert,%% old ImageMagick
+%  cache=true,%%default: false
+]{graphicxwand}
+\setkeys{Gin}{keepaspectratio,height=\textheight,width=0.9\textwidth}
+
+\listfiles
+
+\begin{document}
+
+\includegraphics{inputs/\image.\ext}
+
+\begin{itemize}
+  \makeatletter
+  \item Image: \texttt{\image}
+  \item Extension: \texttt{\ext}
+  \item Image-to-PDF converter: \texttt{\@gfxwand@converter}
+  %\item Option: \texttt{\opt}
+  \makeatother
+\end{itemize}
+
+\end{document}
+% vim: filetype=tex tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
