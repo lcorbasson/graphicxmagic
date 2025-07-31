@@ -32,10 +32,13 @@ echo "Extensions:       ${exts[@]}"
 
 
 (
-	echo '\documentclass{article}'
+	echo '\documentclass[landscape]{article}'
+	echo '\usepackage{calc}'
 	echo '\usepackage{graphicx}'
 	echo '\usepackage{longtable}'
-	echo '\setkeys{Gin}{keepaspectratio,height=0.1\textwidth,width=0.1\textwidth}'
+	echo '\newlength{\imgsize}'
+	echo '\setlength{\imgsize}{\textwidth/'"${#converters[@]}"'/'"${#reference_images[@]}"'/10*8}'
+	echo '\setkeys{Gin}{keepaspectratio,height=\imgsize,width=\imgsize}'
 	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\includegraphics{#1}}{N/A}}'
 	echo '\begin{document}'
 ) | tee "$globaltexfile"
@@ -101,6 +104,7 @@ done | tee -a "$globaltexfile"
 	echo '\end{document}'
 ) | tee -a "$globaltexfile"
 
+exit
 
 for test_name in "${tests[@]}"; do
 	for texfile in "test_$test_name-"*".tex"; do
