@@ -43,6 +43,7 @@ echo -n > "$globaltexfile.in"
 	echo '\setlength{\imgsize}{\textwidth/'"${#converters[@]}"'/'"${#reference_images[@]}"'/10*8}'
 	echo '\setkeys{Gin}{keepaspectratio,height=\imgsize,width=\imgsize}'
 	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\includegraphics{#1}}{N/A}}'
+	echo '\renewcommand{\familydefault}{\sfdefault}'
 	echo '\begin{document}'
 	echo '\input{'"$globaltexfile.in"'}'
 ) | tee -a "$globaltexfile"
@@ -56,7 +57,7 @@ for test_name in "${tests[@]}"; do
 	echo -n ' & '
 	for converter_idx in "${!converters[@]}"; do
 		echo -n '\multicolumn{'"${#reference_images[@]}"'}{'
-		echo -n '|c||}{'"${converters[$converter_idx]}"'}'
+		echo -n '|c||}{\texttt{'"${converters[$converter_idx]}"'}}'
 		if [ "$converter_idx" -lt "$((${#converters[@]} - 1))" ]; then
 			echo -n ' & '
 		else
@@ -67,7 +68,7 @@ for test_name in "${tests[@]}"; do
 	echo -n 'Format & '
 	for converter_idx in "${!converters[@]}"; do
 		for reference_image_idx in "${!reference_images[@]}"; do
-			echo -n "${reference_images[$reference_image_idx]}"
+			echo -n '\texttt{'"${reference_images[$reference_image_idx]}"'}'
 			if [ "$converter_idx" -lt "$((${#converters[@]} - 1))" ] || [ "$reference_image_idx" -lt "$((${#reference_images[@]} - 1))" ]; then
 				echo -n ' & '
 			else
@@ -79,7 +80,7 @@ for test_name in "${tests[@]}"; do
 	echo '\endhead'
 
 	for ext in "${exts[@]}"; do
-		echo -n "$ext & "
+		echo -n '\texttt{'"$ext"'} & '
 		for converter_idx in "${!converters[@]}"; do
 			converter="${converters[$converter_idx]}"
 			for reference_image_idx in "${!reference_images[@]}"; do
