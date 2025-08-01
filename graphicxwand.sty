@@ -21,7 +21,7 @@
 \ProvidesPackage{graphicxwand}
   [2025/07/29 v1.4  Support for (almost) any image format for the graphicx
                     package via various converters
-                    (img2pdf, convert, magick, gm, inkscape, sips)]
+                    (magick/gm/convert, img2pdf, inkscape, sips, vips)]
 
 %% declare package errors
 \def\gfxwand@error{\PackageError{graphicxwand}}
@@ -78,11 +78,11 @@
 \DeclareStringOption[magick]{converter}[magick]
 %% support for image-to-pdf commands:
 %% TODO update documentation
-%% - img2pdf (uses Pillow),
+%% - inkscape (Inkscape, is lossless for vector images),
+%% - img2pdf (uses Pillow, is lossless for raster images),
+%% - sips (macOS),
 %% - imagemagick/magick/convert (ImageMagick),
 %% - graphicsmagick (GraphicsMagick),
-%% - inkscape (Inkscape),
-%% - sips (macOS),
 %% - vips
 \newif\if@gfxwand@imgtopdf \@gfxwand@imgtopdffalse
 \newif\if@gfxwand@inkscape \@gfxwand@inkscapefalse
@@ -91,24 +91,28 @@
 \newif\if@gfxwand@sips \@gfxwand@sipsfalse
 \def\@gfxwand@converter{convert}%% as default
 \newcommand*{\gfxwand@SetupConverter}{%
-  \IfStringInList{\gfxwand@converter}{img2pdf}{
+  \IfStringInList{\gfxwand@converter}{inkscape}{
+    \@gfxwand@inkscapetrue\gdef\@gfxwand@converter{inkscape}
+  }{\IfStringInList{\gfxwand@converter}{img2pdf}{
     \@gfxwand@imgtopdftrue\gdef\@gfxwand@converter{img2pdf}
+  }{\IfStringInList{\gfxwand@converter}{sips}{
+    \@gfxwand@sipstrue\gdef\@gfxwand@converter{sips}
   }{\IfStringInList{\gfxwand@converter}{im,imagemagick,magick}{
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{magick}
   }{\IfStringInList{\gfxwand@converter}{gm,graphicsmagick,gmconvert}{
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{gm\GPT@space convert}
-  }{\IfStringInList{\gfxwand@converter}{inkscape}{
-    \@gfxwand@inkscapetrue\gdef\@gfxwand@converter{inkscape}
   }{\IfStringInList{\gfxwand@converter}{convert}{
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{convert}
-  }{\IfStringInList{\gfxwand@converter}{sips}{
-    \@gfxwand@sipstrue\gdef\@gfxwand@converter{sips}
   }{\IfStringInList{\gfxwand@converter}{vips}{
     \@gfxwand@vipstrue\gdef\@gfxwand@converter{vips}
   }{
     \gfxwand@error{Unknown option value ‘\gfxwand@converter’^^J
       for ‘converter’}{}%
   }}}}}}}
+}
+\newcommand*{\DeclareGraphicsConverter}[1]{%
+  \setkeys{gfxwand}{converter={#1}}%
+  \gfxwand@SetupConverter%
 }
 
 %% lossless mode
@@ -179,38 +183,27 @@
 \def\@gfxwand@targetfile#1{%
   \@gfxwand@targetfilenoext{#1}.pdf%
 }
-%\def\@gfxwand@targetfile#1{%
-%  \ifgfxwand@localfiles
-%    \ifgfxwand@imagecache
-%      \jobname.\pdf@mdfivesum{#1}.4gfxwand.pdf%
-%    \else
-%      \jobname.4gfxwand.pdf%
-%    \fi
-%  \else
-%    #1.4gfxwand.pdf%
-%  \fi
-%}
 
 %% read image file
 \let\clone@Gread@pdf\Gread@pdf
 \def\Gread@imagetopdf#1{%
-  \ifgfxwand@imagecache
-    \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
-      % TODO: invalidate the cached file depending on mtime
-      \typeout{including cached image: \@gfxwand@targetfile{\Gin@base}}%
-    }{\typeout{not found: \@gfxwand@targetfile{\Gin@base}}%
-      \@gfxwand@convert@any@to@pdf}%
-  \else
-    \@gfxwand@convert@any@to@pdf
-  \fi
-  %% renamed inside: foo.EXT -> foo.4gfxwand.pdf
-  \let\clone@Gin@base\Gin@base
-  \def\Gin@base{\@gfxwand@targetfilenoext{\clone@Gin@base}}%
-%  \def\Gin@base{\clone@Gin@base.4gfxwand}%
-  \def\Gin@ext{.pdf}%
-% \typeout{!!! #1}%%=> tigerpsdfmt.4gfxwand.xbb
-% \typeout{!!! \Gin@base\Gin@ext}%%=> tigerpsdfmt.4gfxwand.pdf
-  \clone@Gread@pdf{#1}}
+  \IfFileExists{\Gin@base\Gin@ext}{%
+    \ifgfxwand@imagecache
+      \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
+        % TODO: invalidate the cached file depending on mtime
+        \gfxwand@info{including cached image: \@gfxwand@targetfile{\Gin@base}}%
+      }{\gfxwand@info{cached image not found: \@gfxwand@targetfile{\Gin@base}}%
+        \@gfxwand@convert@any@to@pdf}%
+    \else
+      \@gfxwand@convert@any@to@pdf
+    \fi
+    %% renamed inside: foo.EXT -> foo.4gfxwand.pdf
+    \let\clone@Gin@base\Gin@base
+    \def\Gin@base{\@gfxwand@targetfilenoext{\clone@Gin@base}}%
+    \def\Gin@ext{.pdf}%
+  }{\gfxwand@warning{source image not found: \Gin@base\Gin@ext}}%
+  \clone@Gread@pdf{#1}%
+}
 
 \def\@gfxwand@convert@any@to@pdf{%
   \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@converter)--> \@gfxwand@targetfile{\Gin@base}}%
@@ -228,13 +221,11 @@
     \gfxwand@error{Converter unspecified}%
   \fi\fi\fi\fi\fi
 }
-% TODO: see if we can use a single temp file without adding a .4gfxwand.pdf file to the source directories
-% TODO: see if we can use cache files in the document's directory with a (sha1, md5, ...) hash of the source files' paths?
 
-% clean up at the very end
+%% clean up at the very end
 \RequirePackage{atveryend}
 \RequirePackage{ifplatform}
-% remove the local temp file if present
+%% remove the local temp file if present
 \AtVeryEndDocument{
   \ifgfxwand@localfiles\ifgfxwand@imagecache\else
     \ifwindows
