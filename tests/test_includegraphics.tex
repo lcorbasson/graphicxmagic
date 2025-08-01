@@ -26,12 +26,10 @@
 \usepackage{graphicx}
 \usepackage[%
   converter=\converter,
-  %img2pdf,
-%  magick,%imagemagick,graphicsmagick,%%same as the one;
-  % convert,%% old ImageMagick
-%  cache=true,%%default: false
+  imagecache=false,
+  localfiles=true,
 ]{graphicxwand}
-\setkeys{Gin}{keepaspectratio,height=\textheight,width=0.9\textwidth}
+\setkeys{Gin}{keepaspectratio,height=0.9\textheight,width=0.9\textwidth}
 
 \listfiles
 
