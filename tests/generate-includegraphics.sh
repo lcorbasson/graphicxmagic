@@ -22,7 +22,7 @@ readarray -t exts < <(
 		| sort
 )
 
-globaltexfile="tests.tex.in"
+globaltexfile="tests.tex"
 tests=(includegraphics)
 
 echo "Tests:            ${tests[@]}"
@@ -30,6 +30,9 @@ echo "Converters:       ${converters[@]}"
 echo "Reference images: ${reference_images[@]}"
 echo "Extensions:       ${exts[@]}"
 
+
+echo -n > "$globaltexfile"
+echo -n > "$globaltexfile.in"
 
 (
 	echo '\documentclass[landscape]{article}'
@@ -41,7 +44,8 @@ echo "Extensions:       ${exts[@]}"
 	echo '\setkeys{Gin}{keepaspectratio,height=\imgsize,width=\imgsize}'
 	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\includegraphics{#1}}{N/A}}'
 	echo '\begin{document}'
-) | tee "$globaltexfile"
+	echo '\input{'"$globaltexfile.in"'}'
+) | tee -a "$globaltexfile"
 
 for test_name in "${tests[@]}"; do
 	echo '\subsection{\texttt{'"$test_name"'}}'
@@ -95,7 +99,7 @@ for test_name in "${tests[@]}"; do
 	done
 	echo '\end{longtable}'
 	echo
-done | tee -a "$globaltexfile"
+done | tee -a "$globaltexfile.in"
 
 (
 	echo '\end{document}'
