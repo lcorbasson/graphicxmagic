@@ -21,7 +21,7 @@
 \ProvidesPackage{graphicxwand}
   [2025/07/29 v1.4  Support for (almost) any image format for the graphicx
                     package via various converters
-                    (img2pdf, convert, magick, gm, sips)]
+                    (img2pdf, convert, magick, gm, inkscape, sips)]
 
 %% declare package errors
 \def\gfxwand@error{\PackageError{graphicxwand}}
@@ -81,10 +81,13 @@
 %% - img2pdf (uses Pillow),
 %% - imagemagick/magick/convert (ImageMagick),
 %% - graphicsmagick (GraphicsMagick),
-%% - sips (macOS)
+%% - inkscape (Inkscape),
+%% - sips (macOS),
+%% - vips
 \newif\if@gfxwand@imgtopdf \@gfxwand@imgtopdffalse
+\newif\if@gfxwand@inkscape \@gfxwand@inkscapefalse
 \newif\if@gfxwand@magick \@gfxwand@magickfalse
-%\newif\if@gfxwand@vips \@gfxwand@vipsfalse
+\newif\if@gfxwand@vips \@gfxwand@vipsfalse
 \newif\if@gfxwand@sips \@gfxwand@sipsfalse
 \def\@gfxwand@converter{convert}%% as default
 \newcommand*{\gfxwand@SetupConverter}{%
@@ -94,14 +97,18 @@
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{magick}
   }{\IfStringInList{\gfxwand@converter}{gm,graphicsmagick,gmconvert}{
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{gm\GPT@space convert}
+  }{\IfStringInList{\gfxwand@converter}{inkscape}{
+    \@gfxwand@inkscapetrue\gdef\@gfxwand@converter{inkscape}
   }{\IfStringInList{\gfxwand@converter}{convert}{
     \@gfxwand@magicktrue\gdef\@gfxwand@converter{convert}
   }{\IfStringInList{\gfxwand@converter}{sips}{
     \@gfxwand@sipstrue\gdef\@gfxwand@converter{sips}
+  }{\IfStringInList{\gfxwand@converter}{vips}{
+    \@gfxwand@vipstrue\gdef\@gfxwand@converter{vips}
   }{
     \gfxwand@error{Unknown option value ‘\gfxwand@converter’^^J
       for ‘converter’}{}%
-  }}}}}
+  }}}}}}}
 }
 
 %% lossless mode
@@ -208,14 +215,18 @@
 \def\@gfxwand@convert@any@to@pdf{%
   \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@converter)--> \@gfxwand@targetfile{\Gin@base}}%
   \if@gfxwand@imgtopdf
-    \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base} --nodate -- \Gin@base\Gin@ext\GPT@space}%
+    \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base}\GPT@space --nodate -- \Gin@base\Gin@ext\GPT@space}%
   \else\if@gfxwand@magick
-    \ShellEscape{\@gfxwand@converter\GPT@space \Gin@base\Gin@ext\GPT@space\@gfxwand@targetfile{\Gin@base}}%
+    \ShellEscape{\@gfxwand@converter\GPT@space \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+  \else\if@gfxwand@inkscape
+    \ShellEscape{inkscape --export-type=pdf --export-filename=\@gfxwand@targetfile{\Gin@base}\GPT@space \Gin@base\Gin@ext\GPT@space}%
   \else\if@gfxwand@sips
-    \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}}%
+    \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+  \else\if@gfxwand@vips
+    \ShellEscape{vips copy \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
   \else
     \gfxwand@error{Converter unspecified}%
-  \fi\fi\fi
+  \fi\fi\fi\fi\fi
 }
 % TODO: see if we can use a single temp file without adding a .4gfxwand.pdf file to the source directories
 % TODO: see if we can use cache files in the document's directory with a (sha1, md5, ...) hash of the source files' paths?
