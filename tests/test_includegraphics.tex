@@ -31,11 +31,20 @@
 ]{graphicxwand}
 \setkeys{Gin}{keepaspectratio,height=0.9\textheight,width=0.9\textwidth}
 
+\newcommand{\includegraphicsifexists}[1]{%
+  \IfFileExists{#1}{%
+    \includegraphics{#1}%
+  }{%
+    \typeout{'#1' not found}
+    \end
+  }
+}
+
 \listfiles
 
 \begin{document}
 
-\includegraphics{inputs/\image.\ext}
+\includegraphicsifexists{inputs/\image.\ext}
 
 \begin{itemize}
   \makeatletter
