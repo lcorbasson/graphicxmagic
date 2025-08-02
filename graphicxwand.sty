@@ -159,14 +159,16 @@
 }
 \ifnum\ShellEscapeStatus=1
 \else
-  \gfxwand@error{Run in shell escape mode for proper operation: --shell-escape}%
+  \gfxwand@error{Run in shell escape mode for proper operation: -shell-escape}%
 \fi
 
 %% converted file's name
 \ifgfxwand@localfiles
   \ifgfxwand@imagecache
-    % make sure that we have \pdf@mdfivesum, used for the hash of the image's path
+    % make sure that we have \pdf@mdfivesum, used for the hash of the image's path,
+    % and \pdf@filemoddate, to check if the cache file is still valid
     \RequirePackage{pdftexcmds}
+    \RequirePackage{filemod}
   \fi
 \fi
 \def\@gfxwand@targetfilenoext#1{%
@@ -190,8 +192,14 @@
   \IfFileExists{\Gin@base\Gin@ext}{%
     \ifgfxwand@imagecache
       \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
-        % TODO: invalidate the cached file depending on mtime
-        \gfxwand@info{including cached image: \@gfxwand@targetfile{\Gin@base}}%
+        \filemodcmp{\@gfxwand@targetfile{\Gin@base}}{\Gin@base\Gin@ext}{%
+          % cache file is newer (or has the same modification datetime)
+          \gfxwand@info{including cached image: \@gfxwand@targetfile{\Gin@base}}%
+        }{%
+          % source image is newer
+          \gfxwand@info{cached image has to be regenerated: \@gfxwand@targetfile{\Gin@base}}%
+          \@gfxwand@convert@any@to@pdf
+        }%
       }{\gfxwand@info{cached image not found: \@gfxwand@targetfile{\Gin@base}}%
         \@gfxwand@convert@any@to@pdf}%
     \else
