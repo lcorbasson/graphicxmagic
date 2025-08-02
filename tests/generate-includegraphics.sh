@@ -43,26 +43,28 @@ echo -n > "$globaltexfile.in"
 	echo '\usepackage{tabularray}'
 	echo '\UseTblrLibrary{amsmath,booktabs,counter,diagbox,nameref,siunitx,varwidth,zref}'
 	echo '\newlength{\imgsize}'
-	echo '\setlength{\imgsize}{\textwidth/'"${#converters[@]}"'/'"${#reference_images[@]}"'/10*8}'
+	echo '\setlength{\imgsize}{\textwidth/'"${#converters[@]}"'/'"${#reference_images[@]}"'/10*9}'
 	echo '\newlength{\firstcolumnwd}'
-	echo '\setlength{\firstcolumnwd}{\textwidth-'"${#converters[@]}"'*'"${#reference_images[@]}"'*\imgsize}'
+	echo '\setlength{\firstcolumnwd}{\textwidth/10*1}'
 	echo '\setkeys{Gin}{keepaspectratio,height=\imgsize,width=\imgsize}'
-	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\includegraphics{#1}}{N/A}}'
+	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\parbox{\imgsize}{\includegraphics{#1}}}{N/A}}'
 	echo '\renewcommand{\familydefault}{\sfdefault}'
 	echo '\begin{document}'
-	echo '\section{Tests}'
+	echo '\chapter{Tests}'
 	echo '\input{'"$globaltexfile.in"'}'
 ) | tee -a "$globaltexfile"
 
 for test_name in "${tests[@]}"; do
-	echo '\subsection{\texttt{'"$test_name"'}}'
+	echo '\section{\texttt{'"$test_name"'}}'
 	echo '\begin{center}'
 	echo '\begin{longtblr}['
 	echo '  caption=Results of the \texttt{includegraphics} tests'
 	echo ']{'
 	echo '  vspan=even, hspan=minimal,'
+	echo '  colsep=0pt, rowsep=0pt,',
 	echo '  columns={wd=\imgsize, c},'
 	echo '  column{1}={wd=\firstcolumnwd, l},'
+	echo '  rows={ht=\imgsize, m},'
 #	echo '  colspec={Q[l]' \
 #		&& echo -n '    ' \
 #		&& printf "$(printf "Q[c] %.0s" $(seq 1 "${#reference_images[@]}"))%.0s" $(seq 1 "${#converters[@]}") \
