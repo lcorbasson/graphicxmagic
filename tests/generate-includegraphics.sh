@@ -48,7 +48,7 @@ echo -n > "$globaltexfile.in"
 	echo '\setlength{\firstcolumnwd}{\textwidth/10*1}'
 	echo '\setkeys{Gin}{keepaspectratio,height=\imgsize,width=\imgsize}'
 	echo '\newcommand{\includegraphicsifexists}[1]{\IfFileExists{#1}{\parbox{\imgsize}{\includegraphics{#1}}}{N/A}}'
-	echo '\renewcommand{\familydefault}{\sfdefault}'
+	echo '\usepackage[sfdefault]{atkinson}'
 	echo '\begin{document}'
 	echo '\chapter{Tests}'
 	echo '\input{'"$globaltexfile.in"'}'
