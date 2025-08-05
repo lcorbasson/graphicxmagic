@@ -19,9 +19,10 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{graphicxwand}
-  [2025/07/29 v1.4  Support for (almost) any image format for the graphicx
+  [2025/08/05 v1.5  Support for (almost) any image format for the graphicx
                     package via various converters
-                    (magick/gm/convert, img2pdf, inkscape, sips, vips)]
+                    (vector images: magick/gm/convert, inkscape, sips, soffice;
+                    raster images: magick/gm/convert, img2pdf, sips, vips)]
 
 %% declare package errors
 \def\gfxwand@error{\PackageError{graphicxwand}}
