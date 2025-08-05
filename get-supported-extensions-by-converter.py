@@ -10,6 +10,12 @@ except ModuleNotFoundError as e:
 	pyvips = None
 	print(e)
 import subprocess
+try:
+	from unoserver import converter as unoconverter
+	from unoserver.converter import prop2dict as unoprop2dict
+except ModuleNotFoundError as e:
+	unoconverter = None
+	print(e)
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -82,9 +88,51 @@ magick_variants = [
 for magick_variant in magick_variants:
 	supported_extensions[magick_variant] = get_magick_supported_extensions(variant=magick_variant)
 
+def get_soffice_draw_supported_extensions():
+# soffice --export-type=unknown --export-filename=tiger.unknown tiger.svg 2>&1 > /dev/null | sed -n -e 's|.*Allowed values: \[\([^]]*\),*\].*|\1|p' | tr -d ' .' | tr ',' '\n'
+	server_command = ['unoserver']
+	server_subprocess = subprocess.Popen(server_command)
+
+	try:
+		outs, errs = server_subprocess.communicate(timeout=30)
+		# TODO: find a line with:
+		# INFO:unoserver:Starting UnoConverter.
+	except subprocess.TimeoutExpired as e:
+		print(e)
+
+	converter = unoconverter.UnoConverter()
+	soffice_import_filters_list = converter.get_available_import_filters()
+	soffice_types = converter.type_service.createSubSetEnumerationByProperties(tuple())
+	soffice_types_list = []
+	while soffice_types.hasMoreElements():
+		soffice_types_list.append(unoprop2dict(soffice_types.nextElement()))
+
+	soffice_import_filters_list = [{k: v for k, v in soffice_import_filter.items() if k != 'UINames'} for soffice_import_filter in soffice_import_filters_list]
+	soffice_types_list = [{k: v for k, v in soffice_type.items() if k != 'UINames'} for soffice_type in soffice_types_list]
+
+	soffice_types_and_filters_list = [
+		{**soffice_import_filter, **soffice_type}
+			for soffice_import_filter in soffice_import_filters_list
+				for soffice_type in soffice_types_list
+					if soffice_import_filter['Name'] == soffice_type['PreferredFilter']
+	]
+	soffice_draw_types_and_filters_list = [
+		t for t in soffice_types_and_filters_list
+			if t['DocumentService'] == 'com.sun.star.drawing.DrawingDocument'
+	]
+
+	soffice_draw_supported_extensions = set()
+	for soffice_type in soffice_draw_types_and_filters_list:
+		soffice_draw_supported_extensions.update(ext.lower() for ext in soffice_type['Extensions'] if ext != '*')
+
+	server_subprocess.terminate()
+
+	return soffice_draw_supported_extensions
+
+supported_extensions['soffice_draw'] = get_soffice_draw_supported_extensions()
+
 for converter in sorted(supported_extensions.keys()):
 	print(converter)
-#%% FIXME: remove extensions natively supported by graphicx
 	sorted_exts = sorted(set(
 		[ext for ext in sorted(supported_extensions[converter])]
 		+ [ext.upper() for ext in sorted(supported_extensions[converter])]

@@ -8,6 +8,18 @@ find . -maxdepth 1 -type l | while read reference_image; do
 		"eps" | "pdf" | "ps")
 		"svg" | "svgz")
 			# Vector images
+			echo "$reference_image --(soffice --draw)--> ..."
+			while IFS=',' read format; do
+				if [ "$format" != "$ext" ]; then
+					converted_image="${reference_image%.*}.$format"
+					soffice --headless --convert-to "$format" "$reference_image" \
+						|| soffice --headless --convert-to "$format:draw_${format}_Export" "$reference_image"
+					mv "$reference_image.$format" "$converted_image"
+					if [ -f "$converted_image" ] && [ ! -s "$converted_image" ]; then
+						rm "$converted_image"
+					fi
+				fi
+			done < "formats-soffice_draw.csv"
 			echo "$reference_image --(inkscape)--> ..."
 			while IFS=',' read format; do
 				if [ "$format" != "$ext" ]; then
