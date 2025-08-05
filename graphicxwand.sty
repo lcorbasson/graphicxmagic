@@ -75,48 +75,82 @@
 }
 
 %% converters
-\DeclareStringOption[magick]{converter}[magick]
-%% support for image-to-pdf commands:
+\DeclareStringOption[img2pdf]{rasterconverter}[img2pdf]
+%% support for raster-image-to-pdf commands:
 %% TODO update documentation
-%% - inkscape (Inkscape, is lossless for vector images),
 %% - img2pdf (uses Pillow, is lossless for raster images),
 %% - sips (macOS),
 %% - imagemagick/magick/convert (ImageMagick),
 %% - graphicsmagick (GraphicsMagick),
 %% - vips
-\newif\if@gfxwand@imgtopdf \@gfxwand@imgtopdffalse
-\newif\if@gfxwand@inkscape \@gfxwand@inkscapefalse
-\newif\if@gfxwand@magick \@gfxwand@magickfalse
-\newif\if@gfxwand@vips \@gfxwand@vipsfalse
-\newif\if@gfxwand@sips \@gfxwand@sipsfalse
-\def\@gfxwand@converter{convert}%% as default
-\newcommand*{\gfxwand@SetupConverter}{%
-  \IfStringInList{\gfxwand@converter}{inkscape}{
-    \@gfxwand@inkscapetrue\gdef\@gfxwand@converter{inkscape}
-  }{\IfStringInList{\gfxwand@converter}{img2pdf}{
-    \@gfxwand@imgtopdftrue\gdef\@gfxwand@converter{img2pdf}
-  }{\IfStringInList{\gfxwand@converter}{sips}{
-    \@gfxwand@sipstrue\gdef\@gfxwand@converter{sips}
-  }{\IfStringInList{\gfxwand@converter}{im,imagemagick,magick}{
-    \@gfxwand@magicktrue\gdef\@gfxwand@converter{magick}
-  }{\IfStringInList{\gfxwand@converter}{gm,graphicsmagick,gmconvert}{
-    \@gfxwand@magicktrue\gdef\@gfxwand@converter{gm\GPT@space convert}
-  }{\IfStringInList{\gfxwand@converter}{convert}{
-    \@gfxwand@magicktrue\gdef\@gfxwand@converter{convert}
-  }{\IfStringInList{\gfxwand@converter}{vips}{
-    \@gfxwand@vipstrue\gdef\@gfxwand@converter{vips}
+\newif\if@gfxwand@raster@imgtopdf \@gfxwand@raster@imgtopdffalse
+\newif\if@gfxwand@raster@sips \@gfxwand@raster@sipsfalse
+\newif\if@gfxwand@raster@magick \@gfxwand@raster@magickfalse
+\newif\if@gfxwand@raster@vips \@gfxwand@raster@vipsfalse
+\def\@gfxwand@rasterconverter{img2pdf}%% as default
+\newcommand*{\gfxwand@SetupRasterConverter}{%
+  \IfStrEq{\gfxwand@rasterconverter}{}{%
+    \@gfxwand@raster@imgtopdftrue\gdef\@gfxwand@rasterconverter{img2pdf}
+  }{\IfStringInList{\gfxwand@rasterconverter}{img2pdf}{
+    \@gfxwand@raster@imgtopdftrue\gdef\@gfxwand@rasterconverter{img2pdf}
+  }{\IfStringInList{\gfxwand@rasterconverter}{sips}{
+    \@gfxwand@raster@sipstrue\gdef\@gfxwand@rasterconverter{sips}
+  }{\IfStringInList{\gfxwand@rasterconverter}{im,imagemagick,magick}{
+    \@gfxwand@raster@magicktrue\gdef\@gfxwand@rasterconverter{magick}
+  }{\IfStringInList{\gfxwand@rasterconverter}{gm,graphicsmagick,gmconvert}{
+    \@gfxwand@raster@magicktrue\gdef\@gfxwand@rasterconverter{gm\GPT@space convert}
+  }{\IfStringInList{\gfxwand@rasterconverter}{convert}{
+    \@gfxwand@raster@magicktrue\gdef\@gfxwand@rasterconverter{convert}
+  }{\IfStringInList{\gfxwand@rasterconverter}{vips}{
+    \@gfxwand@raster@vipstrue\gdef\@gfxwand@rasterconverter{vips}
   }{
-    \gfxwand@error{Unknown option value ‘\gfxwand@converter’^^J
-      for ‘converter’}{}%
+    \gfxwand@error{Unknown option value ‘\gfxwand@rasterconverter’^^J
+      for ‘rasterconverter’}{}%
   }}}}}}}
 }
-\newcommand*{\DeclareGraphicsConverter}[1]{%
-  \setkeys{gfxwand}{converter={#1}}%
-  \gfxwand@SetupConverter%
+\newcommand*{\DeclareGraphicsRasterConverter}[1]{%
+  \setkeys{gfxwand}{rasterconverter={#1}}%
+  \gfxwand@SetupRasterConverter%
+}
+
+\DeclareStringOption[inkscape]{vectorconverter}[inkscape]
+%% support for vector-image-to-pdf commands:
+%% TODO update documentation
+%% - inkscape (Inkscape, is lossless for vector images),
+%% - sips (macOS),
+%% - imagemagick/magick/convert (ImageMagick),
+%% - graphicsmagick (GraphicsMagick),
+\newif\if@gfxwand@vector@inkscape \@gfxwand@vector@inkscapefalse
+\newif\if@gfxwand@vector@sips \@gfxwand@vector@sipsfalse
+\newif\if@gfxwand@vector@magick \@gfxwand@vector@magickfalse
+\def\@gfxwand@vectorconverter{inkscape}%% as default
+\newcommand*{\gfxwand@SetupVectorConverter}{%
+  \IfStrEq{\gfxwand@vectorconverter}{}{%
+    \@gfxwand@vector@inkscapetrue\gdef\@gfxwand@vectorconverter{inkscape}
+  }{\IfStringInList{\gfxwand@vectorconverter}{inkscape}{
+    \@gfxwand@vector@inkscapetrue\gdef\@gfxwand@vectorconverter{inkscape}
+  }{\IfStringInList{\gfxwand@vectorconverter}{soffice-draw}{
+    \@gfxwand@vector@inkscapetrue\gdef\@gfxwand@vectorconverter{soffice\GPT@space --draw}
+  }{\IfStringInList{\gfxwand@vectorconverter}{sips}{
+    \@gfxwand@vector@sipstrue\gdef\@gfxwand@vectorconverter{sips}
+  }{\IfStringInList{\gfxwand@vectorconverter}{im,imagemagick,magick}{
+    \@gfxwand@vector@magicktrue\gdef\@gfxwand@vectorconverter{magick}
+  }{\IfStringInList{\gfxwand@vectorconverter}{gm,graphicsmagick,gmconvert}{
+    \@gfxwand@vector@magicktrue\gdef\@gfxwand@vectorconverter{gm\GPT@space convert}
+  }{\IfStringInList{\gfxwand@vectorconverter}{convert}{
+    \@gfxwand@vector@magicktrue\gdef\@gfxwand@vectorconverter{convert}
+  }{
+    \gfxwand@error{Unknown option value ‘\gfxwand@vectorconverter’^^J
+      for ‘vectorconverter’}{}%
+  }}}}}}
+}
+\newcommand*{\DeclareGraphicsVectorConverter}[1]{%
+  \setkeys{gfxwand}{vectorconverter={#1}}%
+  \gfxwand@SetupVectorConverter%
 }
 
 %% lossless mode
-\DeclareBoolOption[true]{lossless} % TODO add a lossy mode for lossless=false
+\DeclareBoolOption[true]{lossless}
 %% image cache flag
 \DeclareBoolOption[true]{imagecache}
 %% use only local files, in the document's directory
@@ -125,14 +159,16 @@
 %% set options defaults and process options
 \DeclareDefaultOption{\gfxwand@warning{`\CurrentOption' ignored}}% For unknown options
 \ProcessKeyvalOptions*{}
-\gfxwand@SetupConverter
+\gfxwand@SetupRasterConverter
+\gfxwand@SetupVectorConverter
 
 %% support for * (any) extension (imagetopdf)
 %% TODO: see why we don't use \DeclareGraphicsRule
 %% TODO: add an option to use JP2/JPG (lossy) conversion instead of PDF/PNG
+%% TODO: detect whether the file is a raster image or a vector image
 \if@gfxwand@needsxbb
   % When including images with dvipdfmx, their bounding boxes should be generated by running extractbb.
-  % The  result will be in an .xbb file; the xbb information is the same as for the PDF format.
+  % The result will be in an .xbb file; the xbb information is the same as for the PDF format.
   \@namedef{Gin@rule@*}#1{{imagetopdf}{.xbb}{#1}}
 \else\if@gfxwand@likepdftex
   \@namedef{Gin@rule@*}#1{{imagetopdf}{.pdf}{#1}}
@@ -146,6 +182,8 @@
 \@ifundefined{Ginclude@pdf}{\gfxwand@error{%
   Please load 'graphicxwand' package after loading 'graphicx' package.}}\relax
 \let\Ginclude@imagetopdf\Ginclude@pdf
+\let\Ginclude@rasterimagetopdf\Ginclude@pdf
+\let\Ginclude@vectorimagetopdf\Ginclude@pdf
 
 %% compatibility for TL16 or lower version
 \@ifundefined{GPT@space}{%
@@ -154,12 +192,13 @@
 
 %% check shell escape trigger
 \IfFileExists{shellesc.sty}{%%is bundled in TL15 or higher release version
-\RequirePackage{shellesc}}{%%otherwise, such TL has no luatex.
+  \RequirePackage{shellesc}}{%%otherwise, such TL has no luatex.
   \protected\def\ShellEscape{\immediate\write18 }%%compatibility for TL14 or lower version
 }
 \ifnum\ShellEscapeStatus=1
 \else
-  \gfxwand@error{Run in shell escape mode for proper operation: -shell-escape}%
+  \gfxwand@error{Run in shell escape mode for proper operation:^^J
+    -shell-escape}{}%
 \fi
 
 %% converted file's name
@@ -182,13 +221,93 @@
     #1.4gfxwand%
   \fi
 }
+\def\@gfxwand@lossytargetfile#1{%
+  \@gfxwand@targetfilenoext{#1}.jp2%
+}
 \def\@gfxwand@targetfile#1{%
   \@gfxwand@targetfilenoext{#1}.pdf%
 }
 
 %% read image file
+\newif\if@@gfxwand@rasterimage
 \let\clone@Gread@pdf\Gread@pdf
 \def\Gread@imagetopdf#1{%
+  \IfStringInList{\Gin@ext}{%
+    % See https://en.wikipedia.org/wiki/Image_file_format#Vector_formats
+    % and the various converters' supported input formats
+    .dhw,%                            ACECAD Digimemo
+    .aff,%                            Acorn Draw (RISC OS)
+    .amf,%                            Additive manufacturing file format
+    .fh1,.fh2,.fh3,.fh4,.fh5,%
+    .fh6,.fh7,.fh8,.fh9,.fh10,%
+    .fh11,.fhd%                       Adobe FreeHand
+    .ai,%                             Adobe Illustrator
+    .afdesign,%                       Affinity Designer
+    .agd,%                            AgileGraph
+    .3ds,%                            AutoDesk 3DS Max
+    .dwg,%                            AutoDesk AutoCAD
+    .dwf,.dwfx,%                      AutoDesk Design Web Format
+    .dxf,%                            AutoDesk Drawing Interchange Format
+    .blend,%                          Blender
+    .cwd,%                            ClarisWorks Draw
+    .dae,%                            COLLADA
+    .cgm,%                            Computer Graphics Metafile
+    .cdr,.cdt,%                       CorelDRAW
+    .ccx,.cmx,%                       CorelDRAW Presentation Exchange
+    .dgn,%                            DGN
+    .djv,.djvu,%                      DjVu
+    .epdf,%                           Encapsulated Portable Document Format
+    .eps,.eps2,.eps3,.epsf,.epsi,%    Encapsulated PostScript
+    .ept,.ept2,.ept3,%                Encapsulated PostScript with TIFF
+    .x3d,.x3db,.x3dbz,.x3dv,.x3dvz,%  Extensible 3D
+    .xaml,%                           Extensible Application Markup Language
+    .fxg,%                            Flash XML Graphics
+    .gb,.gbr,.geb,.gerber,%           Gerber
+    .glb,.gltf,%                      glTF (Graphics Library Transmission Format)
+    .dot,.gv,%                        Graphviz
+    .hvif,%                           Haiku Vector Icon Format
+    .hpgl,%                           Hewlett-Packard Graphics Language (HP-GL)
+    .ifc,.ifcxml,.ifczip,%            Industry Foundation Classes
+    .igs,%                            Initial Graphics Exchange Specification (IGES)
+    .jt,%                             Jupiter Tessellation
+    .lot,%                            Lottie
+    .mvg,%                            Magick Vector Graphics
+    .mml,%                            MathML
+    .vsd,.vsdm,.vsdx,.vdx%            Microsoft Visio
+    .ica,.mca,.mda,.mmr,%             MO:DCA (Mixed Object:Document Content Architecture)
+    .fodg,.odg,%                      OpenDocument Graphics
+    .flt,%                            OpenFlight
+    .ogex,%                           Open Game Engine Exchange (OpenGEX)
+    .otf,%                            OpenType font
+    .oxps,.xps,%                      Open XML Paper Specification
+    .met,%                            OS/2 Metafile
+    .pct,.pic,.pict,%                 PICT
+    .ply,%                            Polygon File Format
+    .pdf,.pocketmod,%                 Portable Document Format
+    .ps,.ps2,.ps3,%                   PostScript
+    .pfa,.pfb,%                       PostScript Type 1 font
+    .pov,%                            POV-Ray
+    .prc,%                            Product Representation Compact
+    .svg,.svgz,%                      Scalable Vector Graphics
+    .skp,%                            SketchUp
+    .swf,%                            Small Web Format
+    .sxd,%                            StarOffice Draw
+    .210,.p21,.step,.stp,.stpnc,%     STEP-file (ISO 10303-21)
+    .stl,%                            Stereolithography
+    .ttc,.ttf,%                       TrueType font
+    .u3d,%                            Universal 3D
+    .wrl,.wrz,%                       Virtual Reality Modeling Language (VRML)
+    .obj,%                            Wavefront OBJ
+    .emf,.emz,.wmf,.wmz,%             Windows Metafile
+    .wpg,%                            WordPerfect Graphics
+    .x3d,.xar,%                       Xara
+    .fig,%                            Xfig
+    .zmf,%                            Zoner Callisto
+  }{% vector image
+    \@@gfxwand@rasterimagefalse%
+  }{ % raster image
+    \@@gfxwand@rasterimagetrue%
+  }
   \IfFileExists{\Gin@base\Gin@ext}{%
     \ifgfxwand@imagecache
       \IfFileExists{\@gfxwand@targetfile{\Gin@base}}{%
@@ -214,20 +333,60 @@
 }
 
 \def\@gfxwand@convert@any@to@pdf{%
-  \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@converter)--> \@gfxwand@targetfile{\Gin@base}}%
-  \if@gfxwand@imgtopdf
-    \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base}\GPT@space --nodate -- \Gin@base\Gin@ext\GPT@space}%
-  \else\if@gfxwand@magick
-    \ShellEscape{\@gfxwand@converter\GPT@space \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
-  \else\if@gfxwand@inkscape
-    \ShellEscape{inkscape --export-type=pdf --export-filename=\@gfxwand@targetfile{\Gin@base}\GPT@space \Gin@base\Gin@ext\GPT@space}%
-  \else\if@gfxwand@sips
-    \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}\GPT@space}%
-  \else\if@gfxwand@vips
-    \ShellEscape{vips copy \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
-  \else
-    \gfxwand@error{Converter unspecified}%
-  \fi\fi\fi\fi\fi
+  \if@@gfxwand@rasterimage
+    \ifgfxwand@lossless
+      \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@rasterconverter)--> \@gfxwand@targetfile{\Gin@base}}%
+      \if@gfxwand@raster@imgtopdf
+        \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base}\GPT@space --nodate -- \Gin@base\Gin@ext\GPT@space}%
+      \else\if@gfxwand@raster@magick
+        \ShellEscape{\@gfxwand@rasterconverter\GPT@space \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+      \else\if@gfxwand@raster@sips
+        \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+      \else\if@gfxwand@raster@vips
+        \ShellEscape{vips copy \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+      \else
+        \gfxwand@error{Raster image converter unspecified}%
+      \fi\fi\fi\fi
+    \else % lossy mode
+      \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@rasterconverter)--> \@gfxwand@lossytargetfile{\Gin@base}}%
+      \if@gfxwand@raster@magick
+        \ShellEscape{\@gfxwand@rasterconverter\GPT@space \Gin@base\Gin@ext\GPT@space \@gfxwand@lossytargetfile{\Gin@base}\GPT@space}%
+      \else\if@gfxwand@raster@sips
+        \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@lossytargetfile{\Gin@base}\GPT@space}%
+      \else\if@gfxwand@raster@vips
+        \ShellEscape{vips copy \Gin@base\Gin@ext\GPT@space \@gfxwand@lossytargetfile{\Gin@base}\GPT@space}%
+      \else
+        \gfxwand@error{Raster image converter unspecified}%
+      \fi\fi\fi
+      \typeout{converting: \@gfxwand@raster@lossytargetfile{\Gin@base} --(img2pdf)--> \@gfxwand@targetfile{\Gin@base}}%
+      \ShellEscape{img2pdf --output \@gfxwand@targetfile{\Gin@base}\GPT@space --nodate -- \@gfxwand@raster@lossytargetfile{\Gin@base}\GPT@space}%
+    \fi
+  \else % vector image
+    \typeout{converting: \Gin@base\Gin@ext\GPT@space --(\@gfxwand@vectorconverter)--> \@gfxwand@targetfile{\Gin@base}}%
+    \if@gfxwand@vector@inkscape
+      \ShellEscape{inkscape --export-type=pdf --export-filename=\@gfxwand@targetfile{\Gin@base}\GPT@space \Gin@base\Gin@ext\GPT@space}%
+    \else\if@gfxwand@vector@sofficedraw
+      \ifwindows
+        \ShellEscape{copy \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\Gin@ext\GPT@space}%
+      \else
+        \ShellEscape{cp \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\Gin@ext\GPT@space}%
+      \fi
+      \ShellEscape{soffice --headless --convert-to pdf:draw\_pdf\_Export \@gfxwand@targetfile{\Gin@base}\Gin@ext\GPT@space}%
+      \ifwindows
+        \ShellEscape{del /f /q \@gfxwand@targetfile{\Gin@base}\Gin@ext\GPT@space}%
+        \ShellEscape{move \@gfxwand@targetfile{\Gin@base}.pdf\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+      \else
+        \ShellEscape{rm -f -- \@gfxwand@targetfile{\Gin@base}\Gin@ext\GPT@space}%
+        \ShellEscape{mv -- \@gfxwand@targetfile{\Gin@base}.pdf\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+      \fi
+    \else\if@gfxwand@vector@magick
+      \ShellEscape{\@gfxwand@vectorconverter\GPT@space \Gin@base\Gin@ext\GPT@space \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+    \else\if@gfxwand@vector@sips
+      \ShellEscape{sips -s format pdf \Gin@base\Gin@ext\GPT@space --out \@gfxwand@targetfile{\Gin@base}\GPT@space}%
+    \else
+      \gfxwand@error{Vector image converter unspecified}%
+    \fi\fi\fi\fi
+  \fi
 }
 
 %% clean up at the very end
@@ -237,8 +396,14 @@
 \AtVeryEndDocument{
   \ifgfxwand@localfiles\ifgfxwand@imagecache\else
     \ifwindows
+      \ifgfxwand@lossless\else
+        \ShellEscape{del /f /q \jobname.4gfxwand.jp2}%
+      \fi
       \ShellEscape{del /f /q \jobname.4gfxwand.pdf}%
     \else
+      \ifgfxwand@lossless\else
+        \ShellEscape{rm -f -- \jobname.4gfxwand.jp2}%
+      \fi
       \ShellEscape{rm -f -- \jobname.4gfxwand.pdf}%
     \fi
   \fi\fi

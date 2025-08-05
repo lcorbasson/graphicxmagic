@@ -16,8 +16,10 @@
 \usepackage{xstring}
 \StrBetween[1,2]{-\JobnameSuffix-}{-}{-}[\image]
 \StrBetween[2,3]{-\JobnameSuffix-}{-}{-}[\ext]
-\StrBetween[3,4]{-\JobnameSuffix-}{-}{-}[\converter]
-\StrBetween[4,5]{-\JobnameSuffix-}{-}{-}[\opt]
+\StrBetween[3,4]{-\JobnameSuffix-}{-}{-}[\rasterconverter]
+\StrBetween[4,5]{-\JobnameSuffix-}{-}{-}[\vectorconverter]
+\StrBetween[5,6]{-\JobnameSuffix-}{-}{-}[\lossless]
+\IfStrEq{\lossless}{}{\edef\lossless{true}}{}
 
 \usepackage[margin=0cm]{geometry}
 
@@ -25,7 +27,9 @@
 
 \usepackage{graphicx}
 \usepackage[%
-  converter=\converter,
+  rasterconverter=\rasterconverter,
+  vectorconverter=\vectorconverter,
+  lossless=\lossless,
   imagecache=false,
   localfiles=true,
 ]{graphicxwand}
@@ -50,8 +54,9 @@
   \makeatletter
   \item Image: \texttt{\image}
   \item Extension: \texttt{\ext}
-  \item Image-to-PDF converter: \texttt{\@gfxwand@converter}
-  %\item Option: \texttt{\opt}
+  \item Vector file: \texttt{\if@@gfxwand@rasterimage yes \else no \fi}
+  \item Image-to-PDF converters: \texttt{\@gfxwand@rasterconverter}, \texttt{\@gfxwand@vectorconverter}
+  \item Lossless mode: \texttt{\lossless}
   \makeatother
 \end{itemize}
 
